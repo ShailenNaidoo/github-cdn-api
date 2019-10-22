@@ -1,12 +1,11 @@
 import express, { json } from 'express';
 import { GitHubCDN } from './github-wrapper'
-import Axios from 'axios';
 
 const app = express();
 
 app.use(json());
 
-app.get('/api', async (req, res) => {
+app.post('/api', async (req, res) => {
   const {
     owner,
     repository,
@@ -29,7 +28,7 @@ app.get('/api', async (req, res) => {
     branch,
   });
 
-  const { attributes, body, frontmatter } = await githubFiles.getFileJSON(filepath);
+  const { attributes, body, frontmatter } = await githubFiles.getFileJSON(filepath, req.headers.authorization as string);
 
   res.json({
     data: attributes,
@@ -38,4 +37,4 @@ app.get('/api', async (req, res) => {
   });
 });
 
-app.listen(process.env.PORT, () => console.log('Server running on 3002'));
+app.listen(8080);

@@ -5,6 +5,9 @@
   "repository": "git@github.com:ShailenNaidoo/github-cdn-api.git",
   "author": "shailen <shailen@lumkani.com>",
   "license": "MIT",
+  "scripts": {
+    "gcp-build": "npx tsc"
+  },
   "devDependencies": {
     "@types/express": "^4.17.1",
     "ts-node": "^8.4.1"

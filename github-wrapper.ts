@@ -18,12 +18,29 @@ class GitHubCDN {
     this.branch = branch;
   }
 
-  async getFileRaw(filePath: string) {
-    return axios.get(`https://raw.githubusercontent.com/${this.owner}/${this.repository}/${this.branch}/${filePath}`).then(res => res.data);
-  }
-
-  async getFileJSON(filePath: string) {
-     return frontmatter(await this.getFileRaw(filePath));
+  async getFileJSON(filePath: string, token: string) {
+    return axios.post('https://api.github.com/graphql', {
+      query: `
+        query ($owner: String!, $repo: String!, $file: String!) { 
+          repository(owner: $owner, name: $repo) {
+            object(expression: $file) {
+              ...on Blob {
+                text
+              }
+            }
+          }
+        }
+      `,
+      variables: {
+        owner: this.owner,
+        repo: this.repository,
+        file: `master:${filePath}`
+      }
+    }, {
+      headers: {
+        Authorization: token,
+      }
+    }).then(res => frontmatter(res.data.data.repository.object.text));
   }
 }
 
