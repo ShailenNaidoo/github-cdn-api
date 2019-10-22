@@ -1,4 +1,5 @@
 import express, { json } from 'express';
+import Markdown from 'markdown-it';
 import { GitHubCDN } from './github-wrapper'
 
 const app = express();
@@ -33,6 +34,7 @@ app.post('/api', async (req, res) => {
   res.json({
     data: attributes,
     content: body,
+    rendered: new Markdown().render(body),
     frontmatter,
   });
 });
